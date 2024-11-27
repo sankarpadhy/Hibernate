@@ -1,0 +1,147 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: hibernate_learning_db
+    environment:
+      POSTGRES_DB: hibernatedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hibernate-net
+
+  basics-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hibernate_basics_demo
+    environment:
+      DEMO_MODULE: basics
+      DEMO_CLASS: com.hibernate.learning.basics.BasicsDemo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hibernatedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hibernate-net
+
+  caching-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hibernate_caching_demo
+    environment:
+      DEMO_MODULE: caching
+      DEMO_CLASS: com.hibernate.learning.caching.CachingDemo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hibernatedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hibernate-net
+
+  querying-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hibernate_querying_demo
+    environment:
+      DEMO_MODULE: querying
+      DEMO_CLASS: com.hibernate.learning.querying.QueryingDemo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hibernatedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hibernate-net
+
+  relationships-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hibernate_relationships_demo
+    environment:
+      DEMO_MODULE: relationships
+      DEMO_CLASS: com.hibernate.learning.relationships.RelationshipsDemo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hibernatedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hibernate-net
+
+  inheritance-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hibernate_inheritance_demo
+    environment:
+      DEMO_MODULE: inheritance
+      DEMO_CLASS: com.hibernate.learning.inheritance.InheritanceDemo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hibernatedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hibernate-net
+
+  bestpractices-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hibernate_bestpractices_demo
+    environment:
+      DEMO_MODULE: bestpractices
+      DEMO_CLASS: com.hibernate.learning.bestpractices.BestPracticesDemo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hibernatedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hibernate-net
+
+  locking-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hibernate_locking_demo
+    environment:
+      DEMO_MODULE: locking
+      DEMO_CLASS: com.hibernate.learning.locking.LockingDemo
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hibernatedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hibernate-net
+
+networks:
+  hibernate-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
